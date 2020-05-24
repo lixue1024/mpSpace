@@ -48,3 +48,9 @@ export default {
   -o-transition: width 2s;
 }
 </style>
+<style lang="wxss">
+page{
+  height: 100%;
+}
+</style>
+

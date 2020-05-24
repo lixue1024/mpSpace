@@ -1,126 +1,187 @@
 <template>
-  <div @click="clickHandle">
-
-    <div class="userinfo" @click="bindViewTap">
-      <img class="userinfo-avatar" v-if="userInfo.avatarUrl" :src="userInfo.avatarUrl" background-size="cover" />
-      <img class="userinfo-avatar" src="/static/images/user.png" background-size="cover" />
-
-      <div class="userinfo-nickname">
-        <card :text="userInfo.nickName"></card>
-      </div>
-    </div>
-
-    <div class="usermotto">
-      <div class="user-motto">
-        <card :text="motto"></card>
-      </div>
-    </div>
-
-    <form class="form-container">
-      <input type="text" class="form-control" :value="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
-      <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
-    </form>
-
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面hhhh</a>
-
-    <div class="all">
-        <div class="left">
+  <div class="home">
+    <van-tabs sticky>
+      <van-tab title="心情便签">
+        <div class="addNote">
+          <span class="addIcon" @click="openPopup">
+            <van-icon name="add"/>
+          </span>
         </div>
-        <div class="right">
+        <div class="addContent" v-for="item in moodNote" :key="item.id">
+          <div class="headPortrait">
+            <van-image
+              width="80rpx"
+              height="80rpx"
+              :src="item.headPortrait"></van-image>
+          </div>
+          <div class="releaseContent">
+            <span class="releaseContentName">{{item.name}}</span>
+            <div class="releaseContentTime">{{item.time}}</div>
+            <div class="releaseOneContent">{{item.content}}</div>
+          </div>
+
         </div>
-    </div>
+        <!-- 遮罩层 -->
+        <van-popup
+          :show="show"
+          position="right"
+          custom-style="width: 30%; height: 100%;"
+          @close="onClosePopup"
+        >
+        <div class="editNote">
+          <van-icon name="edit" class="editIcon" />
+          <span @click="handleEditNote">写心情</span>
+        </div>
+        </van-popup>
+      </van-tab>
+      <van-tab title="时间线">2</van-tab>
+    </van-tabs>
+
   </div>
 </template>
 
 <script>
-import card from '@/components/card'
-
 export default {
-  data () {
+  data() {
     return {
-      motto: 'Hello miniprograme',
-      userInfo: {
-        nickName: 'mpvue',
-        avatarUrl: 'http://mpvue.com/assets/logo.png'
-      }
+      moodNote: [
+        {
+          id: '1',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '2',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 18：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '3',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '4',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '5',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '6',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        },
+        {
+          id: '7',
+          name: '草莓酸布丁',
+          headPortrait: '/static/images/mp01.jpg',
+          time: '昨天 20：45',
+          content: '今天心情不错~~~~~~~~~'
+        }
+      ],
+      show: false
     }
   },
-
-  components: {
-    card
-  },
-
   methods: {
-    bindViewTap () {
-      const url = '../logs/main'
-      if (mpvuePlatform === 'wx') {
-        mpvue.switchTab({ url })
-      } else {
-        mpvue.navigateTo({ url })
-      }
+    openPopup() {
+      this.show = true
+      console.log(this.show)
     },
-    clickHandle (ev) {
-      console.log('clickHandle:', ev)
-      // throw {message: 'custom test'}
+    onClosePopup() {
+      this.show = false
+    },
+    handleEditNote() {
+      const url="../editNote/main"
+      mpvue.navigateTo({ url })
+      this.show = false
     }
   },
-
-  created () {
-    // let app = getApp()
+  onPullDownRefresh() {
+    console.log('下拉刷新了')
+  },
+  onShow() {
+    const content = this.$root.$mp.query.content
+    const len = this.moodNote.length + 1
+    this.moodNote.push({
+      id: String(len),
+      name: '草莓酸布丁',
+      headPortrait: '/static/images/mp01.jpg',
+      time: '刚刚',
+      content: content
+    })
   }
 }
 </script>
 
 <style scoped>
-.userinfo {
+.addNote {
+  height: 40rpx;
+  padding: 5px 10px 5px 5px;
+  /* border: 1px solid #000; */
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
 }
-
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+.addIcon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
 }
-
-.userinfo-nickname {
-  color: #aaa;
+.addContent {
+  display: flex;
+  flex: 2;
+  /* border: 1px solid #000; */
+  padding: 5px 5px 20px 5px;
+  border-top: 2px solid #eee;
+  border-bottom: 5px solid #eee;
 }
-
-.usermotto {
-  margin-top: 150px;
+.headPortrait {
+  width: 80rpx;
+  height: 80rpx;
+  /* border: 1px solid #000; */
 }
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
+.releaseContent {
+  padding-left: 5px;
+  width: 620rpx;
+  /* border: 1px solid #000; */
 }
-.all{
-  width:7.5rem;
-  height:1rem;
-  background-color:blue;
+.releaseContentName {
+  font-weight: 700;
+  color: #a64b00;
 }
-.all:after{
-  display:block;
-  content:'';
-  clear:both;
+.releaseOneContent {
+  padding-top: 5px;
 }
-.left{
-  float:left;
-  width:3rem;
-  height:1rem;
-  background-color:red;
+.releaseContentTime {
+  font-size: 10px;
+  color: rgb(145, 141, 141); 
 }
-
-.right{
-  float:left;
-  width:4.5rem;
-  height:1rem;
-  background-color:green;
+.editNote {
+  height: 60rpx;
+  padding: 5px;
+  /* background-color: #fcd9dd; */
+  border-bottom: 1px solid #ccc;
+  line-height: 60rpx;
+  vertical-align: text-bottom;
+}
+.editIcon {
+  font-weight: 700;
 }
 </style>
